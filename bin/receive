@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+
+import argparse
+import http.server
+import json
+import sys
+
+def eputs(s):
+    print(s, file=sys.stderr)
+
+def fputs(name, s):
+    with open(name, "w", encoding="utf-8") as f:
+        f.write(str(s))
+
+def main():
+    parser = argparse.ArgumentParser(description="A competitive programming receiver.")
+    parser.add_argument("-o", "--output", help="name of testcase file",
+                        default="test", required=False)
+    args = parser.parse_args()
+    name = args.output
+
+    class Handler(http.server.BaseHTTPRequestHandler):
+        def do_POST(self):
+            body = self.rfile.read(int(self.headers["Content-Length"]))
+            data = json.loads(body)
+            for i, case in enumerate(data["tests"]):
+                try:
+                    fputs(f"{name}_{i+1}.ti", case["input"])
+                    fputs(f"{name}_{i+1}.to", case["output"])
+                except:
+                    pass
+
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+
+            eputs("Shutting down server...")
+
+    try:
+        eputs("Starting server on http://localhost:10043...")
+        httpd = http.server.HTTPServer(
+            ("localhost", 10043),
+            Handler,
+        )
+        eputs("Server started. Press Ctrl+Shift+u on the problem page...")
+        httpd.handle_request()
+    except KeyboardInterrupt:
+        eputs("Shutting down server...")
+        try: httpd.shutdown()
+        except: pass
+
+
+if __name__ == "__main__":
+    main()

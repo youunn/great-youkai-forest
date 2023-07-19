@@ -10,17 +10,29 @@
         pkgs = import nixpkgs {
           inherit system;
         };
+        # mkShell = (pkgs.mkShell.override {
+        #   stdenv = pkgs.gcc13Stdenv;
+        # });
+        # cc = pkgs.gcc13;
+        mkShell = pkgs.mkShell;
+        cc = pkgs.gcc;
       in
       {
-        devShell = (pkgs.mkShell.override {
-          stdenv = pkgs.gcc13Stdenv;
-        }) {
+        devShell = mkShell {
           buildInputs = with pkgs; [
-            gcc13
+            cc
+            gnumake
             # ninja
             # meson
+
             clang-tools
+
+            python3
           ];
+
+          shellHook = ''
+            PATH="${./bin}:$PATH"
+          '';
         };
       }
     );

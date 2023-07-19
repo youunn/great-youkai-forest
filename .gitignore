@@ -1,4 +1,10 @@
 .cache
 .direnv
+
+.ninja_log
+
 build
 *.out
+
+*.ti
+*.to
