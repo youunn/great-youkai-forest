@@ -25,6 +25,7 @@
             # ninja
             # meson
 
+            gdb
             clang-tools
 
             python3
