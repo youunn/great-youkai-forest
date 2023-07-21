@@ -2,7 +2,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut io = io::default();
     let t: usize = io.read()?;
     for _ in 0..t {
-        io.print(1)?;
+        let n: usize = io.read()?;
+        let mut result = vec![0u8; n];
+
+        // `a` connected with `a + d` where `d` is a dividor of `n`.
+        // let us say `n` is 12, then `d` will be 1, 2, 3, 4, 6, 12.
+        // `a` is connected to `a + 1`, `a + 2`, `a + 3`, `a + 4`,
+        // but is not connected to `a + 5`, `a + 7`, `a + 8`, ...,
+        // for all possible `a`.
+        let mut p = 2;
+        while n % p == 0 {
+            p += 1;
+        }
+
+        for (i, c) in result.iter_mut().enumerate() {
+            *c = b'a' + (i % p) as u8;
+        }
+
+        io.print_str(&result)?;
     }
 
     Ok(())
@@ -97,6 +114,11 @@ mod io {
 
         pub fn print<T: Display>(&mut self, value: T) -> Result<(), Box<dyn Error>> {
             writeln!(self.out, "{}", value)?;
+            Ok(())
+        }
+
+        pub fn print_str(&mut self, bytes: &[u8]) -> Result<(), Box<dyn Error>> {
+            writeln!(self.out, "{}", std::str::from_utf8(bytes)?)?;
             Ok(())
         }
 
