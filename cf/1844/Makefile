@@ -28,16 +28,16 @@ $(problems): %: $(build_dir)/%
 $(build_dir)/%: %.rs | $(build_dir)
 	$(rustc) $(rustc_flags) $< -o $@
 $(build_dir):
-	mkdir -p $@
+	@mkdir -p $@
 
 .PHONY: pre
 pre: $(test_dir)/$(name)_1.in.txt
 $(test_dir)/$(name)_1.in.txt:
-	receive -o $(name)
+	@receive -o $(name)
 
 .PHONY: test
 case = 1
 test: $(build_dir)/$(name)
-	cat ./$(test_dir)/$(name)_$(case).in.txt \
+	@cat ./$(test_dir)/$(name)_$(case).in.txt \
 	  | ./$(build_dir)/$(name) \
 	  | diff - -auN ./$(test_dir)/$(name)_$(case).out.txt
