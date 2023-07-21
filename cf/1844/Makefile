@@ -1,6 +1,7 @@
 rustc       = rustc
 rustc_flags = -g --edition 2021
 name        = main
+case        = 1
 
 .PHONY: default
 default:
@@ -16,3 +17,7 @@ clean:
 .PHONY: new
 new:
 	cp ../../tpl/a.rs $(name).rs
+
+.PHONY: test
+test: $(name).o
+	cat ./$(name)_$(case).in.txt | ./$(name).o | diff - -auN ./$(name)_$(case).out.txt
