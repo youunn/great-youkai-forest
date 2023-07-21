@@ -6,5 +6,6 @@
 build
 *.o
 
+case
 *.in.txt
 *.out.txt

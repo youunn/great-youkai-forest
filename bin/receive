@@ -3,6 +3,7 @@
 import argparse
 import http.server
 import json
+import os
 import sys
 
 def eputs(s):
@@ -15,7 +16,7 @@ def fputs(name, s):
 def main():
     parser = argparse.ArgumentParser(description="A competitive programming receiver.")
     parser.add_argument("-o", "--output", help="name of testcase file",
-                        default="test", required=False)
+                        default="main", required=False)
     args = parser.parse_args()
     name = args.output
 
@@ -23,9 +24,12 @@ def main():
         def do_POST(self):
             body = self.rfile.read(int(self.headers["Content-Length"]))
             data = json.loads(body)
+            test_dir = "test"
+            if not os.path.exists("test"):
+                os.mkdir("test")
             for i, case in enumerate(data["tests"]):
                 try:
-                    base = f"{name}_{i+1}"
+                    base = f"{test_dir}/{name}_{i+1}"
                     eputs(f"Writing {base}...")
                     fputs(f"{base}.in.txt", case["input"])
                     fputs(f"{base}.out.txt", case["output"])
@@ -33,7 +37,7 @@ def main():
                     pass
 
             self.send_response(200)
-            self.send_header("Content-type", "text/html")
+            self.send_header("Content-type", "text/plain")
             self.end_headers()
 
             eputs("Shutting down server...")
