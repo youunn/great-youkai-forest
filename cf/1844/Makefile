@@ -11,7 +11,7 @@ default:
 
 .PHONY: clean
 clean:
-	rm -rf *.o *.ti *.to
+	rm -rf *.o *.in.txt *.out.txt
 
 .PHONY: new
 new:
