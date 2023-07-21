@@ -1,5 +1,5 @@
 rustc       = rustc
-rustc_flags = -g
+rustc_flags = -g --edition 2021
 name        = main
 
 .PHONY: default
