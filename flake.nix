@@ -45,7 +45,7 @@
           ];
 
           shellHook = ''
-            PATH="${./bin}:$PATH"
+            PATH="${./.}/bin:$PATH"
           '';
         };
       }
