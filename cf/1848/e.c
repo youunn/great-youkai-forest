@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 1000000
+#define N 1200000
 
 static inline int m_add(int a, int b, int m) { return (a + b) % m; }
 static inline int m_sub(int a, int b, int m) { return (a % m - b % m + m) % m; }
@@ -36,24 +36,24 @@ int main() {
 			}
 		}
 	}
+	free(p);
 
 	int x, q, m;
 	scanf("%d%d%d", &x, &q, &m);
 
 	int *inv = malloc((N + 1) * sizeof(int));
-	inv[0] = 0;
 	inv[1] = 1;
-	if (m > N + 1) {
-		m = N + 1;
-	}
-	for (int i = 2; i < m; i++) {
+	for (int i = 2; i < m && i <= N; i++) {
 		inv[i] = m_sub(0, m_div(m / i, m % i, m, inv), m);
 	}
 
+	// 奇因数个数
 	int ans = 1;
-	int *cnt = malloc((N + 1) * sizeof(int));
+	// 分解质因数
+	int *fact = malloc((N + 1) * sizeof(int));
 	for (int i = 0; i <= N; i++) {
-		cnt[i] = 1;
+		// 次数为0
+		fact[i] = 1;
 	}
 	x >>= __builtin_ctz((unsigned int)x);
 	for (int i = 2; i * i <= x; i++) {
@@ -61,24 +61,25 @@ int main() {
 			int c = 1;
 			while (x % i == 0) {
 				x /= i;
-				c += 1;
+				c = m_add(c, 1, m);
 			}
 			ans = m_mul(ans, c, m);
 			if (i <= N) {
-				cnt[i] = c;
+				fact[i] = c;
 			}
 		}
 	}
 	if (x > 1) {
-		ans = m_mul(ans, 2, m);
+		const int c = 2;
+		ans = m_mul(ans, c, m);
 		if (x <= N) {
-			cnt[x] = 2;
+			fact[x] = c;
 		}
 	}
 
-	int flag = 0;
+	int div0 = 0;
+	int xi;
 	for (; q > 0; q--) {
-		int xi;
 		scanf("%d", &xi);
 		xi >>= __builtin_ctz((unsigned int)xi);
 
@@ -86,29 +87,45 @@ int main() {
 			int p = mp[xi];
 			xi /= p;
 
-			int *c = &cnt[p];
+			// ans / c * (c + 1)
+
+#if 0
+if (p > N) {
+	// fprintf(stderr, "p: %d\n", p);
+}
+#endif
+
+			int *c = &fact[p];
+
 			if (*c == 0) {
-				flag -= 1;
+				div0 -= 1;
 			} else {
+
+#if 0			
+if (*c > N) {
+	fprintf(stderr, "c: %d\n", *c);
+}
+#endif
+
 				ans = m_div(ans, *c, m, inv);
 			}
 
 			*c = m_add(*c, 1, m);
 			if (*c == 0) {
-				flag += 1;
+				div0 += 1;
 			} else {
 				ans = m_mul(ans, *c, m);
 			}
 		}
 
-		if (flag > 0) {
-			ans = 0;
+		if (div0 > 0) {
+			printf("%d\n", 0);
+		} else {
+			printf("%d\n", ans);
 		}
-		printf("%d\n", ans);
 	}
 
 	free(mp);
-	free(p);
 	free(inv);
-	free(cnt);
+	free(fact);
 }
