@@ -45,7 +45,7 @@ $(problems)-test: %-test: $(build_dir)/%
 	@cat ./$(test_dir)/$*_$(case).in.txt |\
 	  $< |\
 	  diff - -auN ./$(test_dir)/$*_$(case).out.txt
-	@echo $* passed
+	@echo $*_$(case) passed
 
 .PHONY: $(problems)-copy $(problems)-copy-cmp
 $(problems)-copy: %-copy: %.rs

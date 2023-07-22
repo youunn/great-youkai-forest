@@ -4,11 +4,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for _ in 0..t {
         let mut v: Vec<u8> = io.read_vec(3)?;
         v.sort();
-        if v.len() == 3 && v[1] + v[2] >= 10 {
-            io.print("YES")?;
-        } else {
-            io.print("NO")?;
+        if let (Some(v1), Some(v2)) = (v.get(1), v.get(2)) {
+            if v1 + v2 >= 10 {
+                io.print("YES")?;
+                continue;
+            }
         }
+        io.print("NO")?;
     }
 
     Ok(())

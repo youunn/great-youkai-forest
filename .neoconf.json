@@ -1,9 +1,7 @@
 {
     "lspconfig": {
         "rust_analyzer": {
-            "rust-analyzer.cargo.cfgs": {
-                "sdm": ""
-            }
+            "rust-analyzer.cargo.cfgs": {}
         }
     }
 }
